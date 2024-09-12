@@ -155,7 +155,32 @@ rfm.groupby('SEGMENT').agg({'recency': 'mean',
                             'frequency': 'mean',
                             'monetary': 'mean'})
 
+# a.
+# rfm dataframeinde katagöriler olmadığı için datafremimize ekleme yapıyoruz
 
+cat_df = df[["master_id", "interested_in_categories_12"]]
+
+rfm = pd.merge(rfm, cat_df, on="master_id", how="right")
+rfm.head(15)
+
+kadin = rfm[["master_id", "segment", "interested_in_categories_12"]]
+kadin = kadin.loc[(kadin["interested_in_categories_12"].str.contains("KADIN")) &
+                      ((kadin["segment"] == "loyal_customers") | (kadin["segment"] == "champions"))]
+
+kadin.head()
+kadin.to_csv("kadin.csv")
+
+#b.
+erkekler_40 = rfm[["master_id", "segment", "interested_in_categories_12"]]
+
+
+erkekler_40 = erkekler_40.loc[((erkekler_40["interested_in_categories_12"].str.contains("COCUK")) |
+                           (erkekler_40["interested_in_categories_12"].str.contains("ERKEK"))) &
+                           ((erkekler_40["segment"] == "hibernating") |
+                           (erkekler_40["segment"] == "cant_loose") |
+                           (erkekler_40["segment"] == "new_customers"))]
+erkekler_40.to_csv("erkekler_40.csv")
+erkekler_40.head()
 
 
 
